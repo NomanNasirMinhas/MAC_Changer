@@ -2,7 +2,7 @@ import subprocess
 import optparse
 import re
 
-mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w")
+mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w")
 
 def get_args():
     parser = optparse.OptionParser()
