@@ -1,5 +1,6 @@
 import subprocess
 import optparse
+import re
 
 
 def get_args():
@@ -24,6 +25,21 @@ def mac_changer(iface, mac):
     subprocess.call(["ifconfig ", iface, "up"], shell=True)
 
 
+def check_outcome(iface):
+    result = subprocess.check_output(["ifconfig", iface], shell=True)
+    mac_search_res = re.search("\w\w:\w\w:\w\w:\w\w:\w\w", result)
+    if mac_search_res:
+        if iface == mac_search_res.group(0):
+            print("[+] Interface MAC Address has been spoofed successfully")
+        else:
+            print("[-] Interface MAC Address could not be spoofed")
+
+    else:
+        print("[-] MAC address not found for provided interface.")
+        return False
+
 args = get_args()
 if args != False:
     mac_changer(args.interface, args.new_mac)
+    check_outcome(args.interface)
+
