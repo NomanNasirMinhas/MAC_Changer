@@ -5,6 +5,7 @@ import time
 
 mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w")
 
+
 def get_args():
     parser = optparse.OptionParser()
     parser.add_option("-i", "--i", dest="interface", help="Interface of which MAC address is to be changed")
@@ -19,22 +20,24 @@ def get_args():
     else:
         return options
 
+
 def mac_changer(iface, mac):
     try:
         if mac_pattern.match(mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
             print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
+            subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             interface_up = True
             while interface_up:
                 result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
                                                  universal_newlines=False).decode("utf-8")
                 if "inet" in result:
-                    print("[+] Waiting for "+iface+" status to change to down..")
+                    print("[+] Waiting for " + iface + " status to change to down..")
                     time.sleep(2)
                 else:
                     interface_up = False
-            subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-            subprocess.call(["sudo", "ifconfig ", iface, "hw", "ether", mac], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            subprocess.call(["sudo", "ifconfig ", iface, "hw", "ether", mac], stdout=subprocess.DEVNULL,
+                            stderr=subprocess.STDOUT)
             subprocess.call(["sudo", "ifconfig ", iface, "up"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         else:
             print("[-] Invalid MAC Address")
@@ -44,9 +47,9 @@ def mac_changer(iface, mac):
         return False
 
 
-
 def check_outcome(iface):
-    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
+    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+                                     universal_newlines=False)
     mac_search_res = re.search(mac_pattern, result.decode("utf-8"))
     if mac_search_res:
         if iface == mac_search_res.group(0):
