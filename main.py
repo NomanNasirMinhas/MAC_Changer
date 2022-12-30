@@ -20,12 +20,14 @@ def get_args():
 
 def mac_changer(iface, mac):
     try:
+        subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
         print("[+] Changing MAC Address of interface of " + iface + " to -> " + mac)
         subprocess.call(["ifconfig", iface, "down"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         subprocess.call(["ifconfig ", iface, "up"], shell=True,  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         print("[-] Something Went Wrong: " + err)
+        return False
 
 
 
@@ -44,5 +46,6 @@ def check_outcome(iface):
 
 args = get_args()
 if args != False:
-    mac_changer(args.interface, args.new_mac)
-    check_outcome(args.interface)
+    res = mac_changer(args.interface, args.new_mac)
+    if res != False:
+        check_outcome(args.interface)
