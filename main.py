@@ -31,8 +31,32 @@ def mac_changer(iface, mac, cycle):
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
             else:
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
+                wait = True
+                count = 0
+                while wait:
+                    check = check_status(iface, False)
+                    if check:
+                        print("[+] ", iface, " has been stopped")
+                        wait = False
+                    else:
+                        if count > 9:
+                            return
+                        print("[+] Stopping ", iface, " ......")
+                        count = count + 1
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
-                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
+                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "up"])
+                wait = True
+                count = 0
+                while wait:
+                    check = check_status(iface, True)
+                    if check:
+                        print("[+] ", iface, " has started again")
+                        wait = False
+                    else:
+                        if count > 9:
+                            return
+                        print("[+] Starting ", iface, " ......")
+                        count = count + 1
         else:
             print("[-] Invalid MAC Address")
             return False
@@ -58,6 +82,7 @@ def check_outcome(iface, mac):
 def check_status(iface, status):
     result = subprocess.check_output(["ip", "link", "show", iface], stdin=None, stderr=None, shell=False,
                                      universal_newlines=False).decode("utf-8")
+    print("Current State = ", result)
     if status:
         if "state UP" in result:
             return True
