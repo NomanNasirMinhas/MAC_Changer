@@ -26,7 +26,7 @@ def mac_changer(iface, mac):
 
 
 def check_outcome(iface):
-    result = subprocess.check_output(["ifconfig", iface], shell=True)
+    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
     print(result)
     mac_search_res = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w", result)
     if mac_search_res:
@@ -38,8 +38,8 @@ def check_outcome(iface):
     else:
         print("[-] MAC address not found for provided interface.")
 
+
 args = get_args()
 if args != False:
     mac_changer(args.interface, args.new_mac)
     check_outcome(args.interface)
-
