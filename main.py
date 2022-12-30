@@ -9,8 +9,10 @@ def get_args():
     (options, args) = parser.parse_args()
     if not options.interface:
         print("[-] Please Provide Interface Name to Spoof. Use --help or -h for more info.")
+        return False
     elif not options.new_mac:
         print("[-] Please provide the spoofed MAC address. Use --help or -h for more info.")
+        return False
     else:
         return options
 
@@ -27,4 +29,5 @@ def mac_changer(iface, mac):
 
 
 args = get_args()
-mac_changer(args.interface, args.new_mac)
+if not args:
+    mac_changer(args.interface, args.new_mac)
