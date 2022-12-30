@@ -27,6 +27,7 @@ def mac_changer(iface, mac):
 
 def check_outcome(iface):
     result = subprocess.check_output(["ifconfig", iface], shell=True)
+    print(result)
     mac_search_res = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w", result)
     if mac_search_res:
         if iface == mac_search_res.group(0):
