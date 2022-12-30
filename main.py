@@ -1,6 +1,7 @@
 import subprocess
 import optparse
 import re
+import time
 
 mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w")
 
@@ -18,12 +19,20 @@ def get_args():
     else:
         return options
 
-
 def mac_changer(iface, mac):
     try:
         if mac_pattern.match(mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
             print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
+            interface_up = True
+            while interface_up:
+                result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+                                                 universal_newlines=False).decode("utf-8")
+                if "inet" in result:
+                    print("[+] Waiting for "+iface+" status to change to down..")
+                    time.sleep("2")
+                else:
+                    interface_up = False
             subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             subprocess.call(["sudo", "ifconfig ", iface, "hw", "ether", mac], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             subprocess.call(["sudo", "ifconfig ", iface, "up"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
