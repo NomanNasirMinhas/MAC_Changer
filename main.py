@@ -31,7 +31,6 @@ def mac_changer(iface, mac, cycle):
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
             else:
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
-
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
         else:
@@ -57,15 +56,15 @@ def check_outcome(iface, mac):
 
 
 def check_status(iface, status):
-    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+    result = subprocess.check_output(["ip", "link", "show", iface], stdin=None, stderr=None, shell=False,
                                      universal_newlines=False).decode("utf-8")
     if status:
-        if "inet" in result:
+        if "state UP" in result:
             return True
         else:
             return False
     else:
-        if "inet" not in result:
+        if "state DOWN" in result:
             return True
         else:
             return False
