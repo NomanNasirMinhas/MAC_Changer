@@ -82,7 +82,6 @@ def check_outcome(iface, mac):
 def check_status(iface, status):
     result = subprocess.check_output(["ip", "link", "show", iface], stdin=None, stderr=None, shell=False,
                                      universal_newlines=False).decode("utf-8")
-    print("Current State = ", result)
     if status:
         if "state UP" in result:
             return True
