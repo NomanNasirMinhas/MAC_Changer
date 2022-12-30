@@ -29,5 +29,5 @@ def mac_changer(iface, mac):
 
 
 args = get_args()
-if not args:
+if args != False:
     mac_changer(args.interface, args.new_mac)
