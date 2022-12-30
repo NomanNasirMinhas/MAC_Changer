@@ -40,33 +40,35 @@ def mac_changer(iface, mac):
     try:
         if mac_pattern.match(mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
-            subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-            condition = True # Condition to See if Interface is down
-            while condition:
-                result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
-                                                 universal_newlines=False).decode("utf-8")
-                if "inet" in result:
-                    print("[+] Waiting for " + iface + " status to change to down..")
-                    time.sleep(2)
-                else:
-                    condition = False
-            print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
-            subprocess.call(["sudo", "ifconfig ", iface, "hw", "ether", mac], stdout=subprocess.DEVNULL,
-                            stderr=subprocess.STDOUT)
+            # subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            # condition = True # Condition to See if Interface is down
+            # while condition:
+            #     result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+            #                                      universal_newlines=False).decode("utf-8")
+            #     if "inet" in result:
+            #         print("[+] Waiting for " + iface + " status to change to down..")
+            #         time.sleep(2)
+            #     else:
+            #         condition = False
+            # print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
+            # subprocess.call(["sudo", "ifconfig ", iface, "hw", "ether", mac], stdout=subprocess.DEVNULL,
+            #                 stderr=subprocess.STDOUT)
             condition = True # Condition to See if MAC Address Has been spoofed
             count = 1
             while condition:
                 if count < 10:
                     if check_outcome(iface):
-                        print("[+] Waiting for " + iface + " status to change to down..")
-                        time.sleep(2)
+                        print("[+] MAC Address changed successfully")
                     elif not check_outcome(iface):
-                        condition = False
+                        print("[+] Waiting for " + iface + " MAC Change..")
+                        count = count + 1
+                        time.sleep(2)
                     elif check_outcome(iface) == 0:
                         return
+
                 else:
                     print("[-] MAC Address Could not be spoofed")
-            subprocess.call(["sudo", "ifconfig ", iface, "up"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            # subprocess.call(["sudo", "ifconfig ", iface, "up"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         else:
             print("[-] Invalid MAC Address")
             return False
