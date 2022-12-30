@@ -19,13 +19,9 @@ def get_args():
 
 def mac_changer(iface, mac):
     print("[+] Changing MAC Address of interface of " + iface + " to -> " + mac)
-    # subprocess.call("ifconfig " + interface + " down", shell=True)
-    # subprocess.call("ifconfig " + interface + " hw ether " + new_mac, shell=True)
-    # subprocess.call("ifconfig " + interface + " up", shell=True)
-
-    subprocess.call(["ifconfig", iface, "down"])
-    subprocess.call(["ifconfig ", iface, "hw", "ether", mac])
-    subprocess.call(["ifconfig ", iface, "up"])
+    subprocess.call(["ifconfig", iface, "down"], shell=True)
+    subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True)
+    subprocess.call(["ifconfig ", iface, "up"], shell=True)
 
 
 args = get_args()
