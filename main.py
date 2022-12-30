@@ -8,6 +8,7 @@ def get_args():
     parser = optparse.OptionParser()
     parser.add_option("-i", "--i", dest="interface", help="Interface of which MAC address is to be changed")
     parser.add_option("-m", "--mac", dest="new_mac", help="New MAC address of the selected interface")
+    parser.add_option("-c", "--cycle", dest="cycle", action='store_true', help="Stop the interface before spoofing MAC address")
     (options, args) = parser.parse_args()
     if not options.interface:
         print("[-] Please Provide Interface Name to Spoof. Use --help or -h for more info.")
@@ -19,14 +20,17 @@ def get_args():
         return options
 
 
-def mac_changer(iface, mac):
+def mac_changer(iface, mac, cycle):
     try:
         if mac_pattern.match(mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
             print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
-            # subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
-            subprocess.call(["sudo","ip", "link", "set", "dev", iface, "address", mac])
-            # subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
+            if not cycle:
+                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
+            else:
+                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
+                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "address", mac])
+                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
         else:
             print("[-] Invalid MAC Address")
             return False
@@ -50,7 +54,8 @@ def check_outcome(iface, mac):
 
 
 args = get_args()
+print("Arguments = ", args)
 if args != False:
-    res = mac_changer(args.interface, args.new_mac)
+    res = mac_changer(args.interface, args.new_mac, args.cycle)
     if res != False:
         check_outcome(args.interface, args.new_mac)
