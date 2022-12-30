@@ -27,8 +27,7 @@ def mac_changer(iface, mac):
 
 def check_outcome(iface):
     result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
-    print(result)
-    mac_search_res = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w", result)
+    mac_search_res = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w", result.decode("utf-8"))
     if mac_search_res:
         if iface == mac_search_res.group(0):
             print("[+] Interface MAC Address has been spoofed successfully")
