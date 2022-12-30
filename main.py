@@ -7,7 +7,12 @@ def get_args():
     parser.add_option("-i", "--i", dest="interface", help="Interface of which MAC address is to be changed")
     parser.add_option("-m", "--mac", dest="new_mac", help="New MAC address of the selected interface")
     (options, args) = parser.parse_args()
-    return options.interface, options.new_mac
+    if not options.interface:
+        print("[-] Please Provide Interface Name to Spoof. Use --help or -h for more info.")
+    elif not options.new_mac:
+        print("[-] Please provide the spoofed MAC address. Use --help or -h for more info.")
+    else:
+        return options
 
 
 def mac_changer(iface, mac):
@@ -21,5 +26,5 @@ def mac_changer(iface, mac):
     subprocess.call(["ifconfig ", iface, "up"])
 
 
-(interface, new_mac) = get_args()
-mac_changer(interface, new_mac)
+args = get_args()
+mac_changer(args.interface, args.new_mac)
