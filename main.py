@@ -4,11 +4,13 @@ import re
 
 mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w")
 
+
 def get_args():
     parser = optparse.OptionParser()
     parser.add_option("-i", "--i", dest="interface", help="Interface of which MAC address is to be changed")
     parser.add_option("-m", "--mac", dest="new_mac", help="New MAC address of the selected interface")
-    parser.add_option("-c", "--cycle", dest="cycle", action='store_true', help="Stop the interface before spoofing MAC address")
+    parser.add_option("-c", "--cycle", dest="cycle", action='store_true',
+                      help="Stop the interface before spoofing MAC address")
     (options, args) = parser.parse_args()
     if not options.interface:
         print("[-] Please Provide Interface Name to Spoof. Use --help or -h for more info.")
@@ -28,9 +30,10 @@ def mac_changer(iface, mac, cycle):
             if not cycle:
                 subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
             else:
-                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
-                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "address", mac])
-                subprocess.call(["sudo","ip", "link", "set", "dev", iface, "down"])
+                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
+
+                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "address", mac])
+                subprocess.call(["sudo", "ip", "link", "set", "dev", iface, "down"])
         else:
             print("[-] Invalid MAC Address")
             return False
@@ -39,9 +42,9 @@ def mac_changer(iface, mac, cycle):
         return False
 
 
-
 def check_outcome(iface, mac):
-    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
+    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+                                     universal_newlines=False)
     mac_search_res = re.search(mac_pattern, result.decode("utf-8"))
     if mac_search_res:
         if mac == mac_search_res.group(0):
@@ -53,8 +56,21 @@ def check_outcome(iface, mac):
         print("[-] MAC address not found for provided interface.")
 
 
+def check_status(iface, status):
+    result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False,
+                                     universal_newlines=False).decode("utf-8")
+    if status:
+        if "inet" in result:
+            return True
+        else:
+            return False
+    else:
+        if "inet" not in result:
+            return True
+        else:
+            return False
+
 args = get_args()
-print("Arguments = ", args)
 if args != False:
     res = mac_changer(args.interface, args.new_mac, args.cycle)
     if res != False:
