@@ -29,6 +29,7 @@ def mac_changer(iface, mac):
             subprocess.call(["ifconfig ", iface, "up"], shell=True,  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         else:
             print("[-] Invalid MAC Address")
+            return False
     except:
         print("[-] Something Went Wrong")
         return False
