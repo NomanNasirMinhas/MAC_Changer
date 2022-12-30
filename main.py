@@ -30,8 +30,9 @@ def mac_changer(iface, mac):
         else:
             print("[-] Invalid MAC Address")
             return False
-    except:
-        print("[-] Something Went Wrong")
+    except Exception as err:
+        err = type(err).__name__
+        print("[-] Something Went Wrong: "+ err.message)
         return False
 
 
