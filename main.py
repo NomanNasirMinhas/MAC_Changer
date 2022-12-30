@@ -30,7 +30,7 @@ def mac_changer(iface, mac):
                                                  universal_newlines=False).decode("utf-8")
                 if "inet" in result:
                     print("[+] Waiting for "+iface+" status to change to down..")
-                    time.sleep("2")
+                    time.sleep(2)
                 else:
                     interface_up = False
             subprocess.call(["sudo", "ifconfig", iface, "down"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
