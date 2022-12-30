@@ -25,14 +25,13 @@ def mac_changer(iface, mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
             print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
             subprocess.call(["ifconfig", iface, "down"])
-            subprocess.call(["ifconfig ", iface, "hw", "ether", mac])
+            subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True)
             subprocess.call(["ifconfig ", iface, "up"])
         else:
             print("[-] Invalid MAC Address")
             return False
     except Exception as err:
-        err = type(err).__name__
-        print("[-] Something Went Wrong: "+ err.message)
+        print("[-] Something Went Wrong: "+ err)
         return False
 
 
