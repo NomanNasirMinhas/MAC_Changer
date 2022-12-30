@@ -24,9 +24,9 @@ def mac_changer(iface, mac):
         if mac_pattern.match(mac):
             subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
             print("[+] Changing MAC Address of interface of " + iface + " to " + mac)
-            subprocess.call(["ifconfig", iface, "down"])
+            # subprocess.call(["ifconfig", iface, "down"])
             subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True)
-            subprocess.call(["ifconfig ", iface, "up"], shell=True)
+            # subprocess.call(["ifconfig ", iface, "up"], shell=True)
         else:
             print("[-] Invalid MAC Address")
             return False
