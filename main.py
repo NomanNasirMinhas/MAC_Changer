@@ -25,8 +25,8 @@ def mac_changer(iface, mac):
         subprocess.call(["ifconfig", iface, "down"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         subprocess.call(["ifconfig ", iface, "up"], shell=True,  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        print("[-] Something Went Wrong: " + err)
+    except:
+        print("[-] Something Went Wrong")
         return False
 
 
