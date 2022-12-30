@@ -2,6 +2,7 @@ import subprocess
 import optparse
 import re
 
+mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w")
 
 def get_args():
     parser = optparse.OptionParser()
@@ -20,11 +21,14 @@ def get_args():
 
 def mac_changer(iface, mac):
     try:
-        subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
-        print("[+] Changing MAC Address of interface of " + iface + " to -> " + mac)
-        subprocess.call(["ifconfig", iface, "down"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        subprocess.call(["ifconfig ", iface, "up"], shell=True,  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        if mac_pattern.match(mac):
+            subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
+            print("[+] Changing MAC Address of interface of " + iface + " to -> " + mac)
+            subprocess.call(["ifconfig", iface, "down"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            subprocess.call(["ifconfig ", iface, "hw", "ether", mac], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            subprocess.call(["ifconfig ", iface, "up"], shell=True,  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        else:
+            print("[-] Invalid MAC Address")
     except:
         print("[-] Something Went Wrong")
         return False
@@ -33,7 +37,7 @@ def mac_changer(iface, mac):
 
 def check_outcome(iface):
     result = subprocess.check_output(["ifconfig", iface], stdin=None, stderr=None, shell=False, universal_newlines=False)
-    mac_search_res = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w", result.decode("utf-8"))
+    mac_search_res = re.search(mac_pattern, result.decode("utf-8"))
     if mac_search_res:
         if iface == mac_search_res.group(0):
             print("[+] Interface MAC Address has been spoofed successfully")
