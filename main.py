@@ -36,7 +36,7 @@ def mac_changer(iface, mac, cycle):
                 while wait:
                     check = check_status(iface, False)
                     if check:
-                        print("[+] ", iface, " has been stopped")
+                        print("[+] "+ iface, " has been stopped")
                         wait = False
                     else:
                         if count > 9:
@@ -50,7 +50,7 @@ def mac_changer(iface, mac, cycle):
                 while wait:
                     check = check_status(iface, True)
                     if check:
-                        print("[+] ", iface, " has started again")
+                        print("[+] " + iface, " has started again")
                         wait = False
                     else:
                         if count > 9:
@@ -71,7 +71,7 @@ def check_outcome(iface, mac):
     mac_search_res = re.search(mac_pattern, result.decode("utf-8"))
     if mac_search_res:
         if mac == mac_search_res.group(0):
-            print("[+] Interface MAC Address has been spoofed successfully")
+            print("[+] Interface MAC Address has been spoofed successfully to " + mac)
         else:
             print("[-] Interface MAC Address could not be spoofed")
 
