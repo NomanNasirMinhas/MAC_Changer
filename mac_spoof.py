@@ -3,7 +3,7 @@ import optparse
 import re
 import pyfiglet
 
-ascii_banner = pyfiglet.figlet_format("MAC Spoofer",font="poison")
+ascii_banner = pyfiglet.figlet_format("MAC Spoofer",font="banner3-D")
 print(ascii_banner)
 
 mac_pattern = re.compile(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w")
